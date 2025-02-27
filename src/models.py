@@ -1,29 +1,49 @@
 import os
 import sys
 from sqlalchemy.orm import declarative_base, Mapped, mapped_column
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, ForeignKey
 from eralchemy2 import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
+class User(Base):
+    __tablename__ = 'user'
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
+    email:Mapped[str] = mapped_column(nullable=False)
+    profile_pic: Mapped[str] = mapped_column(nullable=True)
 
-class Address(Base):
-    __tablename__ = 'address'
+class Post(Base):
+    __tablename__ = 'post'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id: Mapped[int] = mapped_column(primary_key=True)
-    street_name: Mapped[str]
-    street_number: Mapped[str]
-    post_code: Mapped[str] = mapped_column(nullable=False)
+    caption: Mapped[str]
+    media: Mapped[str]
+    user_id: Mapped[int]= mapped_column(ForeignKey("user.id"))
+    time_stamp: Mapped[str] = mapped_column(nullable=False)
 
-    def to_dict(self):
-        return {}
+
+class About(Base):
+     __tablename__ = 'about'
+     id: Mapped[int] = mapped_column(primary_key=True)
+     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+     date_of_birth: Mapped[str] 
+     gender: Mapped[str] = mapped_column(nullable = False)
+     address: Mapped[str]
+
+class Media(Base):
+    __tablename__= 'media'
+    id: Mapped[int] = mapped_column(primary_key = True)
+    post_id: Mapped[int] = mapped_column(ForeignKey("post.id"))
+    url: Mapped[str]= mapped_column()
+    
+   
+
+def to_dict(self):
+    return {}
 
 ## Draw from SQLAlchemy base
 try:
